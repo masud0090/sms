@@ -15,7 +15,7 @@ class GeoLocationController extends Controller
     public function getLocations()
     {
         $countries = Country::get();
-        $divisions = Division::get();
+        $divisions = Division::with('country')->get();
         $districts = District::get();
         $areas = Area::get();
         $sub_areas = Sub_area::get();
@@ -35,7 +35,6 @@ class GeoLocationController extends Controller
 
     public function storeLocations(Request $request)
     {
-
 
         if($request->formData['country_name']){
             $country = new Country();

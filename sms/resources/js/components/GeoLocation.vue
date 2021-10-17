@@ -105,7 +105,7 @@
                         <label>Road</label>
                         <div class="row" >
                             <div class="col-md-10">
-                                <select v-if="selectedGeo.road_id" class="form-group" v-model="selectedGeo.road_id" @select="">
+                                <select v-if="!toggles.road" class="form-control" v-model="selectedGeo.road_id" @select="">
                                     <option value="">Select Road</option>
                                     <option v-for="(road,index) in roads" :key="index" :value="road.id">{{road.road_name}}</option>
                                 </select>
@@ -131,23 +131,30 @@
                 </div>
                 <div class="col-md-12" id="showLocations">
                     <ul class="countries tree">
-                        <li>
-                            <a>Bangladesh</a>
-                            <ul class="divisions">
-                                <li>
-                                    <a>Dhaka</a>
-                                    <ul class="districts">
-                                        <li>
-                                            <a>Dhaka</a>
-                                            <ul class="areas">
 
-                                                <li>
-                                                    <a>Daulatpur</a>
+                        <li v-for="(country,index) in countries" :key="index" :value="country.id">
+                            <a>{{ country.country_name }}</a>
+
+                            <ul class="divisions">
+                                <li v-for="(division,index) in divisions" :key="index" :value="division.id">
+                                    <a>{{ division.division_name }}</a>
+
+                                    <ul class="districts">
+                                        <li v-for="(district,index) in districts" :key="index" :value="district.id">
+                                            <a>{{ district.district_name }}</a>
+
+                                            <ul class="areas">
+                                                <li v-for="(area,index) in areas" :key="index" :value="area.id">
+                                                    <a>{{ area.area_name }}</a>
+
                                                     <ul class="sub_areas">
-                                                        <li>
-                                                            <a>Boalia</a>
+                                                        <li v-for="(sub_area,index) in sub_areas" :key="index" :value="sub_area.id">
+                                                            <a>{{ sub_area.sub_area_name }}</a>
+
                                                             <ul class="roads">
-                                                                <li><a>27</a></li>
+                                                                <li v-for="(road,index) in roads" :key="index" :value="road.id">
+                                                                    <a>{{ road.road_name }}</a>
+                                                                </li>
                                                             </ul>
                                                         </li>
                                                     </ul>
@@ -158,6 +165,7 @@
                                 </li>
                             </ul>
                         </li>
+
                     </ul>
                 </div>
             </div>
@@ -221,18 +229,16 @@ export default {
                 'selectedData' : this.selectedGeo
             };
             if(!this.toggles.country){
-                axios.post('/api/store-locations', data && data.selectedData ,',',null).then((response) => {
+                axios.post('/api/store-locations', data ).then((response) => {
                     console.log(response)
                     this.getGeoLocations();
                     this.toggles.country = true
                 });
             }
-             else if (!this.toggles.division){
+             else if (!this.toggles.division ){
                 axios.post('/api/store-locations', data  ).then((response) => {
                     console.log(response)
-this.selectedGeo.country_id=null;
                     this.getGeoLocations();
-
                     this.toggles.division = true
                 });
 

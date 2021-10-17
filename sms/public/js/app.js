@@ -2304,6 +2304,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "GeoLocation",
   data: function data() {
@@ -2353,7 +2361,7 @@ __webpack_require__.r(__webpack_exports__);
       };
 
       if (!this.toggles.country) {
-        axios.post('/api/store-locations', data && data.selectedData, ',', null).then(function (response) {
+        axios.post('/api/store-locations', data).then(function (response) {
           console.log(response);
 
           _this.getGeoLocations();
@@ -2363,7 +2371,6 @@ __webpack_require__.r(__webpack_exports__);
       } else if (!this.toggles.division) {
         axios.post('/api/store-locations', data).then(function (response) {
           console.log(response);
-          _this.selectedGeo.country_id = null;
 
           _this.getGeoLocations();
 
@@ -39827,7 +39834,7 @@ var render = function() {
                   _vm._v(" "),
                   _c("div", { staticClass: "row" }, [
                     _c("div", { staticClass: "col-md-10" }, [
-                      _vm.selectedGeo.road_id
+                      !_vm.toggles.road
                         ? _c(
                             "select",
                             {
@@ -39839,7 +39846,7 @@ var render = function() {
                                   expression: "selectedGeo.road_id"
                                 }
                               ],
-                              staticClass: "form-group",
+                              staticClass: "form-control",
                               on: {
                                 select: function($event) {},
                                 change: function($event) {
@@ -39936,7 +39943,134 @@ var render = function() {
         )
       ]),
       _vm._v(" "),
-      _vm._m(0)
+      _c("div", { staticClass: "col-md-6 geo-location p-5" }, [
+        _vm._m(0),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "col-md-12", attrs: { id: "showLocations" } },
+          [
+            _c(
+              "ul",
+              { staticClass: "countries tree" },
+              _vm._l(_vm.countries, function(country, index) {
+                return _c("li", { key: index, attrs: { value: country.id } }, [
+                  _c("a", [_vm._v(_vm._s(country.country_name))]),
+                  _vm._v(" "),
+                  _c(
+                    "ul",
+                    { staticClass: "divisions" },
+                    _vm._l(_vm.divisions, function(division, index) {
+                      return _c(
+                        "li",
+                        { key: index, attrs: { value: division.id } },
+                        [
+                          _c("a", [_vm._v(_vm._s(division.division_name))]),
+                          _vm._v(" "),
+                          _c(
+                            "ul",
+                            { staticClass: "districts" },
+                            _vm._l(_vm.districts, function(district, index) {
+                              return _c(
+                                "li",
+                                { key: index, attrs: { value: district.id } },
+                                [
+                                  _c("a", [
+                                    _vm._v(_vm._s(district.district_name))
+                                  ]),
+                                  _vm._v(" "),
+                                  _c(
+                                    "ul",
+                                    { staticClass: "areas" },
+                                    _vm._l(_vm.areas, function(area, index) {
+                                      return _c(
+                                        "li",
+                                        {
+                                          key: index,
+                                          attrs: { value: area.id }
+                                        },
+                                        [
+                                          _c("a", [
+                                            _vm._v(_vm._s(area.area_name))
+                                          ]),
+                                          _vm._v(" "),
+                                          _c(
+                                            "ul",
+                                            { staticClass: "sub_areas" },
+                                            _vm._l(_vm.sub_areas, function(
+                                              sub_area,
+                                              index
+                                            ) {
+                                              return _c(
+                                                "li",
+                                                {
+                                                  key: index,
+                                                  attrs: { value: sub_area.id }
+                                                },
+                                                [
+                                                  _c("a", [
+                                                    _vm._v(
+                                                      _vm._s(
+                                                        sub_area.sub_area_name
+                                                      )
+                                                    )
+                                                  ]),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "ul",
+                                                    { staticClass: "roads" },
+                                                    _vm._l(_vm.roads, function(
+                                                      road,
+                                                      index
+                                                    ) {
+                                                      return _c(
+                                                        "li",
+                                                        {
+                                                          key: index,
+                                                          attrs: {
+                                                            value: road.id
+                                                          }
+                                                        },
+                                                        [
+                                                          _c("a", [
+                                                            _vm._v(
+                                                              _vm._s(
+                                                                road.road_name
+                                                              )
+                                                            )
+                                                          ])
+                                                        ]
+                                                      )
+                                                    }),
+                                                    0
+                                                  )
+                                                ]
+                                              )
+                                            }),
+                                            0
+                                          )
+                                        ]
+                                      )
+                                    }),
+                                    0
+                                  )
+                                ]
+                              )
+                            }),
+                            0
+                          )
+                        ]
+                      )
+                    }),
+                    0
+                  )
+                ])
+              }),
+              0
+            )
+          ]
+        )
+      ])
     ])
   ])
 }
@@ -39945,46 +40079,8 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-6 geo-location p-5" }, [
-      _c("div", { staticClass: "panel-heading" }, [
-        _c("h4", [_vm._v("Geo Locations")])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-md-12", attrs: { id: "showLocations" } }, [
-        _c("ul", { staticClass: "countries tree" }, [
-          _c("li", [
-            _c("a", [_vm._v("Bangladesh")]),
-            _vm._v(" "),
-            _c("ul", { staticClass: "divisions" }, [
-              _c("li", [
-                _c("a", [_vm._v("Dhaka")]),
-                _vm._v(" "),
-                _c("ul", { staticClass: "districts" }, [
-                  _c("li", [
-                    _c("a", [_vm._v("Dhaka")]),
-                    _vm._v(" "),
-                    _c("ul", { staticClass: "areas" }, [
-                      _c("li", [
-                        _c("a", [_vm._v("Daulatpur")]),
-                        _vm._v(" "),
-                        _c("ul", { staticClass: "sub_areas" }, [
-                          _c("li", [
-                            _c("a", [_vm._v("Boalia")]),
-                            _vm._v(" "),
-                            _c("ul", { staticClass: "roads" }, [
-                              _c("li", [_c("a", [_vm._v("27")])])
-                            ])
-                          ])
-                        ])
-                      ])
-                    ])
-                  ])
-                ])
-              ])
-            ])
-          ])
-        ])
-      ])
+    return _c("div", { staticClass: "panel-heading" }, [
+      _c("h4", [_vm._v("Geo Locations")])
     ])
   }
 ]
