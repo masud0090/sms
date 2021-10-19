@@ -2310,8 +2310,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "GeoLocation",
   data: function data() {
@@ -2352,6 +2350,7 @@ __webpack_require__.r(__webpack_exports__);
     this.getGeoLocations();
   },
   methods: {
+    Geo: function Geo() {},
     storeLocations: function storeLocations() {
       var _this = this;
 
@@ -2364,7 +2363,8 @@ __webpack_require__.r(__webpack_exports__);
         axios.post('/api/store-locations', data).then(function (response) {
           console.log(response);
 
-          _this.getGeoLocations();
+          _this.getGeoLocations(); //
+
 
           _this.toggles.country = true;
         });
@@ -2415,11 +2415,9 @@ __webpack_require__.r(__webpack_exports__);
 
       if (name === 'country') {
         this.toggles.country = !this.toggles.country;
-        null;
         this.selectedGeo.country_id = null;
       } else if (name === 'division') {
         this.toggles.division = !this.toggles.division;
-        null;
         this.selectedGeo.division_id = null;
       } else if (name === 'district') {
         this.toggles.district = !this.toggles.district;
@@ -2434,6 +2432,9 @@ __webpack_require__.r(__webpack_exports__);
         this.toggles.road = !this.toggles.road;
         this.selectedGeo.road_id = null;
       }
+    },
+    selectedName: function selectedName() {
+      if (selectedData) {}
     },
     getGeoLocations: function getGeoLocations() {
       var _this2 = this;
@@ -39358,9 +39359,11 @@ var render = function() {
                             }
                           },
                           [
-                            _c("option", { attrs: { value: "" } }, [
-                              _vm._v("Select Country")
-                            ]),
+                            _c(
+                              "option",
+                              { attrs: { value: "Select Country" } },
+                              [_vm._v("Select Country")]
+                            ),
                             _vm._v(" "),
                             _vm._l(_vm.countries, function(country, index) {
                               return _c(
@@ -39415,7 +39418,7 @@ var render = function() {
                           }
                         }
                       },
-                      [_vm._v(_vm._s(_vm.toggles.country ? "show" : "add"))]
+                      [_vm._v(_vm._s(_vm.toggles.country ? "Show" : "Add"))]
                     )
                   ])
                 ])
@@ -39517,7 +39520,7 @@ var render = function() {
                             }
                           }
                         },
-                        [_vm._v(_vm._s(_vm.toggles.division ? "show" : "add"))]
+                        [_vm._v(_vm._s(_vm.toggles.division ? "Show" : "Add"))]
                       )
                     ])
                   ])
@@ -39619,7 +39622,7 @@ var render = function() {
                             }
                           }
                         },
-                        [_vm._v(_vm._s(_vm.toggles.district ? "show" : "add"))]
+                        [_vm._v(_vm._s(_vm.toggles.district ? "Show" : "Add"))]
                       )
                     ])
                   ])
@@ -39719,7 +39722,7 @@ var render = function() {
                             }
                           }
                         },
-                        [_vm._v(_vm._s(_vm.toggles.area ? "show" : "add"))]
+                        [_vm._v(_vm._s(_vm.toggles.area ? "Show" : "Add"))]
                       )
                     ])
                   ])
@@ -39821,7 +39824,7 @@ var render = function() {
                             }
                           }
                         },
-                        [_vm._v(_vm._s(_vm.toggles.sub_area ? "show" : "add"))]
+                        [_vm._v(_vm._s(_vm.toggles.sub_area ? "Show" : "Add"))]
                       )
                     ])
                   ])
@@ -39921,7 +39924,7 @@ var render = function() {
                             }
                           }
                         },
-                        [_vm._v(_vm._s(_vm.toggles.road ? "show" : "add"))]
+                        [_vm._v(_vm._s(_vm.toggles.road ? "Show" : "Add"))]
                       )
                     ])
                   ])
@@ -39936,7 +39939,7 @@ var render = function() {
                   attrs: { type: "button" },
                   on: { click: _vm.storeLocations }
                 },
-                [_vm._v("save")]
+                [_vm._v("Save")]
               )
             ])
           ]

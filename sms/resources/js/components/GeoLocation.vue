@@ -11,7 +11,7 @@
                         <div class="row">
                             <div class="col-md-10">
                                 <select v-if="!toggles.country" class="form-control" v-model="selectedGeo.country_id">
-                                    <option value="">Select Country</option>
+                                    <option value="Select Country">Select Country</option>
                                     <option v-for="(country,index) in countries" :key="index" :value="country.id">
                                         {{country.country_name}}
                                     </option>
@@ -21,7 +21,7 @@
                                        v-model="geoForm.country_name">
                             </div>
                             <div class="col-md-2">
-                                <button @click="getSetToggles('country')">{{toggles.country ? "show" : "add"}}</button>
+                                <button @click="getSetToggles('country')">{{toggles.country ? "Show" : "Add"}}</button>
                             </div>
                         </div>
                     </div>
@@ -38,10 +38,11 @@
                                 <input v-else class="form-control" type="text"  v-model="geoForm.division_name">
                             </div>
                             <div class="col-md-2">
-                                 <button @click="getSetToggles('division')">{{toggles.division ? "show" : "add"}}</button>
+                                 <button @click="getSetToggles('division')">{{toggles.division ? "Show" : "Add"}}</button>
                             </div>
                      </div>
                     </div>
+
 
                     <div v-if="selectedGeo.division_id" class="form-group">
                         <label>District</label>
@@ -57,7 +58,7 @@
 
                             </div>
                             <div class="col-md-2">
-                                <button @click="getSetToggles('district')">{{toggles.district ? "show" : "add"}}</button>
+                                <button @click="getSetToggles('district')">{{toggles.district ? "Show" : "Add"}}</button>
                             </div>
                         </div>
                     </div>
@@ -75,7 +76,7 @@
                                 <input v-else class="form-control" type="text" v-model="geoForm.area_name">
                             </div>
                             <div class="col-md-2">
-                                <button @click="getSetToggles('area')">{{toggles.area ? "show" : "add"}}</button>
+                                <button @click="getSetToggles('area')">{{toggles.area ? "Show" : "Add"}}</button>
                             </div>
                         </div>
                     </div>
@@ -94,7 +95,7 @@
                             </div>
 
                             <div class="col-md-2">
-                                <button @click="getSetToggles('sub_area')">{{toggles.sub_area ? "show" : "add"}}</button>
+                                <button @click="getSetToggles('sub_area')">{{toggles.sub_area ? "Show" : "Add"}}</button>
                             </div>
                         </div>
                     </div>
@@ -114,15 +115,16 @@
                             </div>
 
                             <div class="col-md-2">
-                                <button @click="getSetToggles('road')">{{toggles.road ? "show" : "add"}}</button>
+                                <button @click="getSetToggles('road')">{{toggles.road ? "Show" : "Add"}}</button>
                             </div>
                         </div>
                     </div>
                     <div class="button">
-                        <button type="button" @click="storeLocations" class="btn btn-success">save</button>
+                        <button type="button" @click="storeLocations" class="btn btn-success">Save</button>
                     </div>
                 </form>
             </div>
+
 
 
             <div class="col-md-6 geo-location p-5">
@@ -175,10 +177,6 @@
 </template>
 
 
-<script>
-
-
-</script>
 
 <script>
 export default {
@@ -223,25 +221,33 @@ export default {
 
     },
     methods: {
+
+        Geo(){
+
+        },
+
         storeLocations(){
             let data = {
                 'formData' : this.geoForm,
                 'selectedData' : this.selectedGeo
             };
-            if(!this.toggles.country){
+
+
+            if(!this.toggles.country ){
                 axios.post('/api/store-locations', data ).then((response) => {
                     console.log(response)
                     this.getGeoLocations();
+                    //
                     this.toggles.country = true
                 });
             }
+
              else if (!this.toggles.division ){
                 axios.post('/api/store-locations', data  ).then((response) => {
                     console.log(response)
                     this.getGeoLocations();
                     this.toggles.division = true
                 });
-
             }
 
             else if (!this.toggles.district){
@@ -287,10 +293,10 @@ export default {
         getSetToggles(name) {
             console.log(name)
             if (name === 'country') {
-                this.toggles.country = !this.toggles.country;null
+                this.toggles.country = !this.toggles.country;
                 this.selectedGeo.country_id = null;
             } else if (name === 'division') {
-                this.toggles.division = !this.toggles.division;null
+                this.toggles.division = !this.toggles.division;
                 this.selectedGeo.division_id = null;
             } else if (name === 'district') {
                 this.toggles.district = !this.toggles.district;
@@ -304,6 +310,12 @@ export default {
             } else if (name === 'road') {
                 this.toggles.road = !this.toggles.road;
                 this.selectedGeo.road_id=null;
+            }
+        },
+
+        selectedName(){
+            if(selectedData ){
+
             }
         },
 
