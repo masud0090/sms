@@ -9,11 +9,15 @@ class Area extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'district_name',
+        'area_name',
         'district_id',
         'division_id',
         'country_id',
     ];
+
+    public function sub_area(){
+        return $this->hasMany(Sub_area::class);
+    }
 
     public function country(){
         return $this->belongsTo(Country::class, 'country_id', 'id');
@@ -26,4 +30,5 @@ class Area extends Model
     public function district(){
         return $this->belongsTo(District::class,'district_id','id');
     }
+
 }

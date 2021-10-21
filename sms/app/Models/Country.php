@@ -13,4 +13,11 @@ class Country extends Model
 
 
     ];
+    public function division(){
+        return $this->hasMany(Division::class);
+    }
+
+    public function district(){
+        return $this->hasMany(District::class);
+    }
 }

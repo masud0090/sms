@@ -18,6 +18,9 @@ class District extends Model
     }
 
     public function division(){
-        return $this->belongsTo(Division::class,'division_id','id');
+        return $this->belongsTo(Division::class);
+    }
+    public function area(){
+        return $this->hasMany(Area::class);
     }
 }

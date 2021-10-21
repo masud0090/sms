@@ -10,8 +10,8 @@
                         <label>Country</label>
                         <div class="row">
                             <div class="col-md-10">
-                                <select v-if="!toggles.country" class="form-control" v-model="selectedGeo.country_id">
-                                    <option value="Select Country">Select Country</option>
+                                <select v-if="!toggles.country" class="form-control"  v-model="selectedGeo.country_id">
+                                    <option value="">Select Country</option>
                                     <option v-for="(country,index) in countries" :key="index" :value="country.id">
                                         {{country.country_name}}
                                     </option>
@@ -132,43 +132,7 @@
                     <h4>Geo Locations</h4>
                 </div>
                 <div class="col-md-12" id="showLocations">
-                    <ul class="countries tree">
-
-                        <li v-for="(country,index) in countries" :key="index" :value="country.id">
-                            <a>{{ country.country_name }}</a>
-
-                            <ul class="divisions">
-                                <li v-for="(division,index) in divisions" :key="index" :value="division.id">
-                                    <a>{{ division.division_name }}</a>
-
-                                    <ul class="districts">
-                                        <li v-for="(district,index) in districts" :key="index" :value="district.id">
-                                            <a>{{ district.district_name }}</a>
-
-                                            <ul class="areas">
-                                                <li v-for="(area,index) in areas" :key="index" :value="area.id">
-                                                    <a>{{ area.area_name }}</a>
-
-                                                    <ul class="sub_areas">
-                                                        <li v-for="(sub_area,index) in sub_areas" :key="index" :value="sub_area.id">
-                                                            <a>{{ sub_area.sub_area_name }}</a>
-
-                                                            <ul class="roads">
-                                                                <li v-for="(road,index) in roads" :key="index" :value="road.id">
-                                                                    <a>{{ road.road_name }}</a>
-                                                                </li>
-                                                            </ul>
-                                                        </li>
-                                                    </ul>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-
-                    </ul>
+                    
                 </div>
             </div>
         </div>
@@ -237,7 +201,6 @@ export default {
                 axios.post('/api/store-locations', data ).then((response) => {
                     console.log(response)
                     this.getGeoLocations();
-                    //
                     this.toggles.country = true
                 });
             }
@@ -247,6 +210,8 @@ export default {
                     console.log(response)
                     this.getGeoLocations();
                     this.toggles.division = true
+
+
                 });
             }
 
@@ -326,14 +291,75 @@ export default {
             axios.get('/api/get-locations').then((response) => {
                 // console.log(response.data);
                 this.countries = response.data.countries;
+                // this.divisions = response.data.divisions;
+                // this.districts = response.data.districts;
+                // this.areas = response.data.areas;
+                // this.sub_areas = response.data.sub_areas;
+                // this.roads = response.data.roads;
+            });
+        },
+        getDivisions(countryId){
+            axios.get('/api/get-divisions', { params : {'country_id' : countryId}}).then((response) => {
                 this.divisions = response.data.divisions;
+            });
+        },
+
+        getDistricts(divisionId){
+            axios.get('/api/get-districts', { params : {'division_id' : divisionId}}).then((response) => {
                 this.districts = response.data.districts;
+            });
+        },
+
+        getAreas(districtId){
+            axios.get('/api/get-areas', { params : {'district_id' : districtId}}).then((response) => {
                 this.areas = response.data.areas;
+            });
+        },
+
+        getSubAreas(areaId){
+            axios.get('/api/get-sub_areas', { params : {'area_id' : areaId}}).then((response) => {
                 this.sub_areas = response.data.sub_areas;
+            });
+        },
+
+        getRoads(subAreaId){
+            axios.get('/api/get-roads', { params : {'sub_area_id' : subAreaId}}).then((response) => {
                 this.roads = response.data.roads;
             });
         }
 
+
+    },
+    watch: {
+        'selectedGeo.country_id' : function (newVal, oldVal) {
+            if(newVal){
+                this.getDivisions(newVal);
+            }
+        },
+
+        'selectedGeo.division_id' : function (newVal, oldVal) {
+            if(newVal){
+                this.getDistricts(newVal);
+            }
+        },
+
+        'selectedGeo.district_id' : function (newVal, oldVal) {
+            if(newVal){
+                this.getAreas(newVal);
+            }
+        },
+
+        'selectedGeo.area_id' : function (newVal, oldVal) {
+            if(newVal){
+                this.getSubAreas(newVal);
+            }
+        },
+
+        'selectedGeo.sub_area_id' : function (newVal, oldVal) {
+            if(newVal){
+                this.getRoads(newVal);
+            }
+        },
 
     }
 

@@ -2274,42 +2274,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "GeoLocation",
   data: function data() {
@@ -2363,8 +2327,7 @@ __webpack_require__.r(__webpack_exports__);
         axios.post('/api/store-locations', data).then(function (response) {
           console.log(response);
 
-          _this.getGeoLocations(); //
-
+          _this.getGeoLocations();
 
           _this.toggles.country = true;
         });
@@ -2441,13 +2404,94 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.get('/api/get-locations').then(function (response) {
         // console.log(response.data);
-        _this2.countries = response.data.countries;
-        _this2.divisions = response.data.divisions;
-        _this2.districts = response.data.districts;
-        _this2.areas = response.data.areas;
-        _this2.sub_areas = response.data.sub_areas;
-        _this2.roads = response.data.roads;
+        _this2.countries = response.data.countries; // this.divisions = response.data.divisions;
+        // this.districts = response.data.districts;
+        // this.areas = response.data.areas;
+        // this.sub_areas = response.data.sub_areas;
+        // this.roads = response.data.roads;
       });
+    },
+    getDivisions: function getDivisions(countryId) {
+      var _this3 = this;
+
+      axios.get('/api/get-divisions', {
+        params: {
+          'country_id': countryId
+        }
+      }).then(function (response) {
+        _this3.divisions = response.data.divisions;
+      });
+    },
+    getDistricts: function getDistricts(divisionId) {
+      var _this4 = this;
+
+      axios.get('/api/get-districts', {
+        params: {
+          'division_id': divisionId
+        }
+      }).then(function (response) {
+        _this4.districts = response.data.districts;
+      });
+    },
+    getAreas: function getAreas(districtId) {
+      var _this5 = this;
+
+      axios.get('/api/get-areas', {
+        params: {
+          'district_id': districtId
+        }
+      }).then(function (response) {
+        _this5.areas = response.data.areas;
+      });
+    },
+    getSubAreas: function getSubAreas(areaId) {
+      var _this6 = this;
+
+      axios.get('/api/get-sub_areas', {
+        params: {
+          'area_id': areaId
+        }
+      }).then(function (response) {
+        _this6.sub_areas = response.data.sub_areas;
+      });
+    },
+    getRoads: function getRoads(subAreaId) {
+      var _this7 = this;
+
+      axios.get('/api/get-roads', {
+        params: {
+          'sub_area_id': subAreaId
+        }
+      }).then(function (response) {
+        _this7.roads = response.data.roads;
+      });
+    }
+  },
+  watch: {
+    'selectedGeo.country_id': function selectedGeoCountry_id(newVal, oldVal) {
+      if (newVal) {
+        this.getDivisions(newVal);
+      }
+    },
+    'selectedGeo.division_id': function selectedGeoDivision_id(newVal, oldVal) {
+      if (newVal) {
+        this.getDistricts(newVal);
+      }
+    },
+    'selectedGeo.district_id': function selectedGeoDistrict_id(newVal, oldVal) {
+      if (newVal) {
+        this.getAreas(newVal);
+      }
+    },
+    'selectedGeo.area_id': function selectedGeoArea_id(newVal, oldVal) {
+      if (newVal) {
+        this.getSubAreas(newVal);
+      }
+    },
+    'selectedGeo.sub_area_id': function selectedGeoSub_area_id(newVal, oldVal) {
+      if (newVal) {
+        this.getRoads(newVal);
+      }
     }
   }
 });
@@ -39359,11 +39403,9 @@ var render = function() {
                             }
                           },
                           [
-                            _c(
-                              "option",
-                              { attrs: { value: "Select Country" } },
-                              [_vm._v("Select Country")]
-                            ),
+                            _c("option", { attrs: { value: "" } }, [
+                              _vm._v("Select Country")
+                            ]),
                             _vm._v(" "),
                             _vm._l(_vm.countries, function(country, index) {
                               return _c(
@@ -39946,134 +39988,7 @@ var render = function() {
         )
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "col-md-6 geo-location p-5" }, [
-        _vm._m(0),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "col-md-12", attrs: { id: "showLocations" } },
-          [
-            _c(
-              "ul",
-              { staticClass: "countries tree" },
-              _vm._l(_vm.countries, function(country, index) {
-                return _c("li", { key: index, attrs: { value: country.id } }, [
-                  _c("a", [_vm._v(_vm._s(country.country_name))]),
-                  _vm._v(" "),
-                  _c(
-                    "ul",
-                    { staticClass: "divisions" },
-                    _vm._l(_vm.divisions, function(division, index) {
-                      return _c(
-                        "li",
-                        { key: index, attrs: { value: division.id } },
-                        [
-                          _c("a", [_vm._v(_vm._s(division.division_name))]),
-                          _vm._v(" "),
-                          _c(
-                            "ul",
-                            { staticClass: "districts" },
-                            _vm._l(_vm.districts, function(district, index) {
-                              return _c(
-                                "li",
-                                { key: index, attrs: { value: district.id } },
-                                [
-                                  _c("a", [
-                                    _vm._v(_vm._s(district.district_name))
-                                  ]),
-                                  _vm._v(" "),
-                                  _c(
-                                    "ul",
-                                    { staticClass: "areas" },
-                                    _vm._l(_vm.areas, function(area, index) {
-                                      return _c(
-                                        "li",
-                                        {
-                                          key: index,
-                                          attrs: { value: area.id }
-                                        },
-                                        [
-                                          _c("a", [
-                                            _vm._v(_vm._s(area.area_name))
-                                          ]),
-                                          _vm._v(" "),
-                                          _c(
-                                            "ul",
-                                            { staticClass: "sub_areas" },
-                                            _vm._l(_vm.sub_areas, function(
-                                              sub_area,
-                                              index
-                                            ) {
-                                              return _c(
-                                                "li",
-                                                {
-                                                  key: index,
-                                                  attrs: { value: sub_area.id }
-                                                },
-                                                [
-                                                  _c("a", [
-                                                    _vm._v(
-                                                      _vm._s(
-                                                        sub_area.sub_area_name
-                                                      )
-                                                    )
-                                                  ]),
-                                                  _vm._v(" "),
-                                                  _c(
-                                                    "ul",
-                                                    { staticClass: "roads" },
-                                                    _vm._l(_vm.roads, function(
-                                                      road,
-                                                      index
-                                                    ) {
-                                                      return _c(
-                                                        "li",
-                                                        {
-                                                          key: index,
-                                                          attrs: {
-                                                            value: road.id
-                                                          }
-                                                        },
-                                                        [
-                                                          _c("a", [
-                                                            _vm._v(
-                                                              _vm._s(
-                                                                road.road_name
-                                                              )
-                                                            )
-                                                          ])
-                                                        ]
-                                                      )
-                                                    }),
-                                                    0
-                                                  )
-                                                ]
-                                              )
-                                            }),
-                                            0
-                                          )
-                                        ]
-                                      )
-                                    }),
-                                    0
-                                  )
-                                ]
-                              )
-                            }),
-                            0
-                          )
-                        ]
-                      )
-                    }),
-                    0
-                  )
-                ])
-              }),
-              0
-            )
-          ]
-        )
-      ])
+      _vm._m(0)
     ])
   ])
 }
@@ -40082,8 +39997,12 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "panel-heading" }, [
-      _c("h4", [_vm._v("Geo Locations")])
+    return _c("div", { staticClass: "col-md-6 geo-location p-5" }, [
+      _c("div", { staticClass: "panel-heading" }, [
+        _c("h4", [_vm._v("Geo Locations")])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-12", attrs: { id: "showLocations" } })
     ])
   }
 ]
