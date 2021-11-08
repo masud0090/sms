@@ -28,11 +28,11 @@
 
 
                     <div v-if="selectedGeo.country_id" class="form-group">
-                        <label>Division</label>
+                        <label>State</label>
                         <div class="row" >
                             <div class="col-md-10">
                         <select v-if="!toggles.division" class="form-control" v-model="selectedGeo.division_id" >
-                            <option value="">Select Division</option>
+                            <option value="">Select State</option>
                             <option v-for="(division,index) in divisions" :key="index" :value="division.id">{{division.division_name}}</option>
                         </select>
                                 <input v-else class="form-control" type="text"  v-model="geoForm.division_name">
@@ -123,16 +123,19 @@
                         <button type="button" @click="storeLocations" class="btn btn-success">Save</button>
                     </div>
                 </form>
+<!--                <button class="btn btn-danger btn-sm m-1" @click="deleteCountry(countries.id)">Delete</button>-->
             </div>
-
 
 
             <div class="col-md-6 geo-location p-5">
                 <div class="panel-heading">
-                    <h4>Geo Locations</h4>
+<!--                    <h4>Geo Locations</h4>-->
                 </div>
-                <div class="col-md-12" id="showLocations">
-                    
+                <div v-if="ready" class="col-md-12" id="showLocations" style="overflow-y:scroll;height:450px;">
+
+
+                    <vue-tree :option="option" ></vue-tree>
+
                 </div>
             </div>
         </div>
@@ -143,6 +146,8 @@
 
 
 <script>
+require('../utils/vue-tree');
+
 export default {
     name: "GeoLocation",
     data() {
@@ -163,6 +168,7 @@ export default {
                 sub_area_id: null,
                 road_id: null
             },
+            ready:false,
             countries: [],
             divisions: [],
             districts: [],
@@ -176,19 +182,34 @@ export default {
                 area: false,
                 sub_area: false,
                 road: false,
+            },
+            option: {
+                root: {
+                    name: 'Geo Location',
+                    isParent: true,
+                    isOpen: true,
+                    openedIcon: 'fa fa-folder-open-o',
+                    closedIcon: 'fa fa-folder-o',
+                    children: []
+                }
             }
         }
     },
     created() {
         this.getGeoLocations();
+        this.getTree();
+        this.deleteCountries()
 
 
     },
+    computed :{
+        treeData (){
+            return [];
+        }
+    },
+
+
     methods: {
-
-        Geo(){
-
-        },
 
         storeLocations(){
             let data = {
@@ -197,63 +218,39 @@ export default {
             };
 
 
-            if(!this.toggles.country ){
-                axios.post('/api/store-locations', data ).then((response) => {
-                    console.log(response)
-                    this.getGeoLocations();
-                    this.toggles.country = true
-                });
-            }
 
-             else if (!this.toggles.division ){
-                axios.post('/api/store-locations', data  ).then((response) => {
-                    console.log(response)
-                    this.getGeoLocations();
-                    this.toggles.division = true
+            axios.post('/api/store-locations', data).then((response) => {
+                console.log(response)
+                this.getGeoLocations();
+                this.getTree();
 
+                this.toggles.country = false;
+                this.toggles.division = false;
+                this.toggles.district = false;
+                this.toggles.area = false;
+                this.toggles.sub_area = false;
+                this.toggles.road = false;
 
-                });
-            }
+                if(this.selectedGeo.country_id){
+                    this.getDivisions(this.selectedGeo.country_id)
+                }
+                if(this.selectedGeo.division_id){
+                    this.getDistricts(this.selectedGeo.division_id)
+                }
+                if(this.selectedGeo.district_id){
+                    this.getAreas(this.selectedGeo.district_id)
+                }
+                if(this.selectedGeo.area_id){
+                    this.getSubAreas(this.selectedGeo.area_id)
+                }
+                if(this.selectedGeo.sub_area_id){
+                    this.getRoads(this.selectedGeo.sub_area_id)
+                }
 
-            else if (!this.toggles.district){
-                axios.post('/api/store-locations', data).then((response) => {
-                    console.log(response)
-                    this.getGeoLocations();
-                    this.toggles.district = true
-                });
+            });
 
-            }
-
-            else if (!this.toggles.area){
-                axios.post('/api/store-locations', data).then((response) => {
-                    console.log(response)
-                    this.getGeoLocations();
-                    this.toggles.area = true
-                });
-
-            }
-
-            else if (!this.toggles.sub_area){
-                axios.post('/api/store-locations', data).then((response) => {
-                    console.log(response)
-                    this.getGeoLocations();
-                    this.toggles.sub_area = true
-                });
-
-            }
-
-            else if (!this.toggles.road){
-                axios.post('/api/store-locations', data).then((response) => {
-                    console.log(response)
-                    this.getGeoLocations();
-                    this.toggles.road = true
-                });
-
-            }
 
         },
-
-
 
         getSetToggles(name) {
             console.log(name)
@@ -278,26 +275,106 @@ export default {
             }
         },
 
-        selectedName(){
-            if(selectedData ){
+        getTree(){
+            this.option.root.children = [];
+            axios.get('/api/get-tree').then((response) => {
+               // console.log(response.data);
+                this.countries = response.data.countries;
+                for(let i =0; i<this.countries.length; i++){
+                    this.option.root.children.push(
+                        {
+                            name: this.countries[i].country_name,
+                            isParent: this.countries[i].divisions.length > 0 ? true : false,
+                            isOpen : this.countries[i].divisions.length > 0 ? true : false,
+                            openedIcon: 'fa fa-folder-open-o',
+                            closedIcon: 'fa fa-folder-o',
+                            children: [],
+                            buttons: [
+                                {
+                                    title: 'Delete',
+                                    icon: 'fa fa-trash',
+                                    //click:this.deleteCountries(this.countries[i].id),
 
-            }
+                                }
+                            ]
+                        }
+                    );
+                    for(let j=0; j<this.countries[i].divisions.length; j++){
+                        this.option.root.children[i].children.push(
+                            {
+                                name: this.countries[i].divisions[j].division_name,
+                                isParent: this.countries[i].divisions[j].districts.length > 0 ? true : false,
+                                isOpen : this.countries[i].divisions[j].districts.length ? true : false,
+                                openedIcon: 'fa fa-folder-open-o',
+                                closedIcon: 'fa fa-folder-o',
+                                children: []
+                            }
+                        );
+                        for(let k=0; k<this.countries[i].divisions[j].districts.length; k++){
+                            this.option.root.children[i].children[j].children.push(
+                                {
+                                    name: this.countries[i].divisions[j].districts[k].district_name,
+                                    isParent: this.countries[i].divisions[j].districts[k].areas.length > 0 ? true : false,
+                                    isOpen : this.countries[i].divisions[j].districts[k].areas.length ? true : false,
+                                    openedIcon: 'fa fa-folder-open-o',
+                                    closedIcon: 'fa fa-folder-o',
+                                    children: []
+                                }
+                            );
+                            for(let l=0; l<this.countries[i].divisions[j].districts[k].areas.length; l++){
+                                this.option.root.children[i].children[j].children[k].children.push(
+                                    {
+                                        name: this.countries[i].divisions[j].districts[k].areas[l].area_name,
+                                        isParent: this.countries[i].divisions[j].districts[k].areas[l].sub_areas.length > 0 ? true : false,
+                                        isOpen : this.countries[i].divisions[j].districts[k].areas[l].sub_areas.length ? true : false,
+                                        openedIcon: 'fa fa-folder-open-o',
+                                        closedIcon: 'fa fa-folder-o',
+                                        children: []
+                                    }
+                                );
+                                for(let m=0; m<this.countries[i].divisions[j].districts[k].areas[l].sub_areas.length; m++){
+                                    this.option.root.children[i].children[j].children[k].children[l].children.push(
+                                        {
+                                            name: this.countries[i].divisions[j].districts[k].areas[l].sub_areas[m].sub_area_name,
+                                            isParent: this.countries[i].divisions[j].districts[k].areas[l].sub_areas[m].roads.length > 0 ? true : false,
+                                            isOpen : this.countries[i].divisions[j].districts[k].areas[l].sub_areas[m].roads.length ? true : false,
+                                            openedIcon: 'fa fa-folder-open-o',
+                                            closedIcon: 'fa fa-folder-o',
+                                            children: []
+                                        }
+                                    );
+                                    for(let n=0; n<this.countries[i].divisions[j].districts[k].areas[l].sub_areas[m].roads.length; n++){
+                                        this.option.root.children[i].children[j].children[k].children[l].children[m].children.push(
+                                            {
+                                                name: this.countries[i].divisions[j].districts[k].areas[l].sub_areas[m].roads[n].road_name,
+                                                isParent: this.countries[i].divisions[j].districts[k].areas[l].sub_areas[m].roads[n] > 0 ? true : false,
+                                                isOpen : this.countries[i].divisions[j].districts[k].areas[l].sub_areas[m].roads[n] ? true : false,
+                                                openedIcon:'fa fa-folder-open-o',
+                                                closedIcon: 'fa fa-folder-o',
+                                                children: []
+                                            }
+                                        )
+                                    }
+                                }
+                            }
+
+                        }
+
+                    }
+                }
+                this.ready = true;
+
+            })
         },
-
-
-
 
         getGeoLocations() {
             axios.get('/api/get-locations').then((response) => {
                 // console.log(response.data);
                 this.countries = response.data.countries;
-                // this.divisions = response.data.divisions;
-                // this.districts = response.data.districts;
-                // this.areas = response.data.areas;
-                // this.sub_areas = response.data.sub_areas;
-                // this.roads = response.data.roads;
+
             });
         },
+
         getDivisions(countryId){
             axios.get('/api/get-divisions', { params : {'country_id' : countryId}}).then((response) => {
                 this.divisions = response.data.divisions;
@@ -326,6 +403,19 @@ export default {
             axios.get('/api/get-roads', { params : {'sub_area_id' : subAreaId}}).then((response) => {
                 this.roads = response.data.roads;
             });
+        },
+
+
+
+
+        deleteCountries(id){
+                axios.delete(`api/delete-countries/${id}`).then(response=>{
+                    this.countries;
+
+                }).catch(error=>{
+                    console.log(error)
+                })
+
         }
 
 
@@ -370,17 +460,9 @@ export default {
 </script>
 
 <style scoped>
-.tree li:before {
-    content: "";
-    display: block;
-    width: 10px;
-    height: 0;
-    border-top: 1px solid #acacac;
-    margin-top: -1px;
-    position: absolute;
-    top: 1em;
-    left: 0;
-}
+@import '../utils/vue-tree/style.css';
+
+
 .form-group button {
     height: 29px;
     background: #2196F3;
@@ -397,26 +479,13 @@ export default {
 }
 
 
-.tree li {
-    margin: 0;
-    padding: 0 1.5em;
-    line-height: 2em;
-    font-weight: bold;
-    position: relative;
-}
+
 
 .geo-location ul {
     margin-left: 20px;
 }
 
-.tree, .tree ul {
-    margin: 0 0 0 1em;
-    padding: 0;
-    list-style: none;
-    color: #369;
-    position: relative;
-    border-left: 1px dashed #acacac;
-}
+
 
 ul {
     display: block;
@@ -432,6 +501,7 @@ label {
     display: inline-block;
     max-width: 100%;
     margin-bottom: 5px;
+    font-size: 16px;
     font-weight: bold;
 }
 </style>

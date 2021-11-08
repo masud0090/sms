@@ -17,7 +17,7 @@ class Sub_area extends Model
 
     ];
 
-    public function road(){
+    public function roads(){
         return $this->hasMany(Road::class);
     }
 
@@ -26,14 +26,14 @@ class Sub_area extends Model
         return $this->belongsTo(Country::class, 'country_id', 'id');
     }
 
-    public function division(){
+    public function divisions(){
         return $this->belongsTo(Division::class,'division_id','id');
     }
 
-    public function district(){
+    public function districts(){
         return $this->belongsTo(District::class,'district_id','id');
     }
-    public function area(){
+    public function areas(){
         return $this->belongsTo(Area::class,'area_id','id');
     }
 }

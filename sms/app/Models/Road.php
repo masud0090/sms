@@ -24,17 +24,17 @@ class Road extends Model
         return $this->belongsTo(Country::class, 'country_id', 'id');
     }
 
-    public function division(){
+    public function divisions(){
         return $this->belongsTo(Division::class,'division_id','id');
     }
 
-    public function district(){
+    public function districts(){
         return $this->belongsTo(District::class,'district_id','id');
     }
-    public function area(){
+    public function areas(){
         return $this->belongsTo(Area::class,'area_id','id');
     }
-    public function sub_area(){
+    public function sub_areas(){
         return $this->belongsTo(Sub_area::class,'Sub_area_id','id');
     }
 }

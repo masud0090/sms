@@ -15,19 +15,19 @@ class Area extends Model
         'country_id',
     ];
 
-    public function sub_area(){
-        return $this->hasMany(Sub_area::class);
+    public function sub_areas(){
+        return $this->hasMany(Sub_area::class, 'area_id','id');
     }
 
     public function country(){
         return $this->belongsTo(Country::class, 'country_id', 'id');
     }
 
-    public function division(){
+    public function divisions(){
         return $this->belongsTo(Division::class,'division_id','id');
     }
 
-    public function district(){
+    public function districts(){
         return $this->belongsTo(District::class,'district_id','id');
     }
 

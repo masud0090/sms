@@ -21,6 +21,8 @@ Vue.use(VueRouter);
 Vue.use(VueAxios, axios);
 
 
+require('font-awesome/css/font-awesome.min.css');
+
 
 /**
  * The following block of code may be used to automatically register your

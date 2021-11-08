@@ -16,19 +16,9 @@ class GeoLocationController extends Controller
     {
 
         $countries = Country::get();
-//        $divisions = Division::with('district')->get();
-//        $districts = District::get();
-//        $areas = Area::get();
-//        $sub_areas = Sub_area::get();
-//        $roads = Road::get();
 
         $data = [
             'countries' => $countries,
-//            'divisions' => $divisions,
-//            'districts' => $districts,
-//            'areas' => $areas,
-//            'sub_areas' => $sub_areas,
-//            'roads' => $roads,
         ];
 
         return response()->json($data);
@@ -115,6 +105,7 @@ class GeoLocationController extends Controller
            $area->division_id = $request->selectedData['division_id'];
            $area->district_id = $request->selectedData['district_id'];
            $area->save();
+
        }
 
 
@@ -126,6 +117,7 @@ class GeoLocationController extends Controller
            $sub_area->district_id = $request->selectedData['district_id'];
            $sub_area->area_id = $request->selectedData['area_id'];
            $sub_area->save();
+           return redirect()->back();
        }
 
        else if($request->formData['road_name'] && !isset($request->selectedData['road_id'])) {
@@ -140,17 +132,94 @@ class GeoLocationController extends Controller
        }
     }
 
-    public function showLocation()
+    public function getTree()
     {
-        $countries = Country::with('division','district')->get();
-     //   $divisions = Division::with('district',)->first();
+        $countries = Country::with('divisions.districts.areas.sub_areas.roads')->get();
 
         $data = [
             'countries' => $countries,
-        //    'divisions' => $divisions,
         ];
-
         return response()->json($data);
     }
 
+
+
+
+    public function deleteCountry($id){
+        $countries = Country::with('divisions.districts.areas.sub_areas.roads')->where('countries.id', $id);
+
+        Division::where('country_id',$id)->delete();
+        District::where('country_id',$id)->delete();
+        Area::where('country_id',$id)->delete();
+        Sub_area::where('country_id',$id)->delete();
+        Road::where('country_id',$id)->delete();
+        $countries->delete();
+//        $data = [
+//            'countries' => $countries,
+//        ];
+        $message=" delete Succesfully";
+        return response()->json($message);
+    }
+
+
+    public function deleteDivisions($id){
+        $divisions = Division::with('districts.areas.sub_areas.roads')->where('divisions.id', $id);
+
+        District::where('division_id',$id)->delete();
+        Area::where('division_id',$id)->delete();
+        Sub_area::where('division_id',$id)->delete();
+        Road::where('division_id',$id)->delete();
+        $divisions->delete();
+        $message=" delete Succesfully";
+        return response()->json($message);
+    }
+
+
+    public function deleteDistricts($id){
+        $districts = District::with('areas.sub_areas.roads')->where('districts.id', $id);
+
+        Area::where('district_id',$id)->delete();
+        Sub_area::where('district_id',$id)->delete();
+        Road::where('district_id',$id)->delete();
+        $districts->delete();
+        $message=" delete Succesfully";
+        return response()->json($message);
+    }
+
+
+    public function deleteAreas($id){
+        $areas = Area::with('sub_areas.roads')->where('areas.id', $id);
+
+        Sub_area::where('area_id',$id)->delete();
+        Road::where('area_id',$id)->delete();
+        $areas->delete();
+        $message=" delete Succesfully";
+        return response()->json($message);
+    }
+
+
+    public function deleteSubAreas($id){
+        $sub_areas = Sub_area::with('roads')->where('sub_areas.id', $id);
+
+        Road::where('sub_area_id',$id)->delete();
+        $sub_areas->delete();
+        $message=" delete Succesfully";
+        return response()->json($message);
+    }
+
+
+    public function deleteRoads($id){
+        $roads = Road::findOrfail($id)->delete();
+
+        $data = [
+            'roads' => $roads
+        ];
+        $message=" delete Succesfully";
+        return response()->json($message);
+    }
+
 }
+
+
+
+

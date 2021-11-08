@@ -17,10 +17,10 @@ class District extends Model
         return $this->belongsTo(Country::class, 'country_id', 'id');
     }
 
-    public function division(){
-        return $this->belongsTo(Division::class);
+    public function divisions(){
+        return $this->belongsTo(Division::class,'division_id','id');
     }
-    public function area(){
-        return $this->hasMany(Area::class);
+    public function areas(){
+        return $this->hasMany(Area::class,'district_id','id');
     }
 }

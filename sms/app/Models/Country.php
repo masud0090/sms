@@ -13,11 +13,14 @@ class Country extends Model
 
 
     ];
-    public function division(){
-        return $this->hasMany(Division::class);
+    public function divisions(){
+        return $this->hasMany(Division::class,'country_id','id');
     }
 
-    public function district(){
-        return $this->hasMany(District::class);
-    }
+//    public function district(){
+//        return $this->hasMany(District::class);
+//    }
+//    public function area(){
+//        return $this->hasMany(Area::class);
+//    }
 }
